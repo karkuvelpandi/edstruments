@@ -22,7 +22,7 @@ interface UserContextValue {
   login: (email: string, password: string) => Promise<void>;
   logout: (user: User) => void;
   isAuthenticated: boolean;
-  toast: (message: string, variant?: string) => SnackbarKey;
+  toast: (message: string, variant?: "info" | "default" | "error" | "success" | "warning" | undefined) => SnackbarKey;
 }
 const UserContext = createContext<UserContextValue | undefined>(undefined);
 
@@ -31,7 +31,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [user, setUser] = useState<User | null>(null);
-  const toast = (message: string, variant = 'info') => enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  const toast = (message: string, variant = 'info' as ("info" | "default" | "error" | "success" | "warning")) => enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
   useEffect(() => {
     const currentUserEmail = localStorage.getItem("currentLoggedInUser");
     console.log("Current user:", currentUserEmail);
@@ -42,7 +42,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       console.log("User not found, redirecting to login page");
       router.push("/auth");
     }
-  }, []);
+  }, [router]);
 
   const login = async (email: string, password: string) => {
     // In a real app, you would validate credentials against an API
