@@ -101,8 +101,8 @@ const Auth = () => {
           {() => (
             <Form>
               <Box display="flex" flexDirection="column" gap={2} mt={2}>
-                <FormikTextField name="email" label="Email"/>
-                <FormikTextField name="password" label="Password"/>
+                <FormikTextField name="email" label="Email" type="email"/>
+                <FormikTextField name="password" label="Password" type="password"/>
                 <Button type="submit" variant="contained" color="primary">
                   Login
                 </Button>
