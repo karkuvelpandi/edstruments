@@ -4,7 +4,7 @@ import { useUser } from "@/context/UserProvider";
 import { Box, Button, Tab } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { TabContext, TabList } from "@mui/lab";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import InvoiceTable from "@/components/dashboard/InvoiceTable";
 import {
   draftedInvoiceDetailsAtom,
@@ -93,4 +93,11 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Dashboard />
+    </Suspense>
+  );
+}
