@@ -18,7 +18,7 @@ const DocumentUpload = () => {
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
     useAtom(invoiceDetailsAtom);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string >('');
   const [showPdf, setShowPdf] = useState(false);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];

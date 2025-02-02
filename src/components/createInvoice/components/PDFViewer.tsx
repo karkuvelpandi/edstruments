@@ -3,11 +3,11 @@ import { Document, Page, pdfjs } from "react-pdf";
 import 'react-pdf/dist/Page/TextLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
- const PDFViewerComponent = ({ pdfUrl }) => {
-  const [numPages, setNumPages] = useState(null);
+ const PDFViewerComponent = ({ pdfUrl }: { pdfUrl: string }) => {
+  const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
+  const onDocumentLoadSuccess = ({ numPages }: any) => {
     setNumPages(numPages);
   };
 

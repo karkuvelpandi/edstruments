@@ -13,6 +13,7 @@ import {
 } from "@/store";
 import { useAtom } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const Dashboard = () => {
     const searchParams = useSearchParams();
@@ -40,14 +41,16 @@ const Dashboard = () => {
         Welcome, {user?.name || "Guest"}!
       </h1>
       <div className="flex justify-center">
-        <Button
-          variant="outlined"
-          color="primary"
-          href="/dashboard/create-invoice"
+        <Link
+          href="/dashboard/create-invoice?currentTab=vendor"
         >
-          Create Invoice
-          <ArrowForwardIcon className="!ml-2" />
-        </Button>
+          <Button
+            variant="outlined"
+            endIcon={<ArrowForwardIcon />}
+          >
+            Create Invoice
+          </Button>
+        </Link>
       </div>
       <div>
         <TabContext value={activeTab}>
