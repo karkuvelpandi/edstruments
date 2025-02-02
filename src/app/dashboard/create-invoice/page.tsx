@@ -6,14 +6,23 @@ import { useDropzone } from "react-dropzone";
 import { TabContext, TabList } from "@mui/lab";
 import Link from "next/link";
 import Image from "next/image";
-import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
+import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 import FormikTextField from "@/components/auth/components/FormikTextField";
 import VendorDetailsForm from "@/components/createInvoice/VendorDetailsForm";
 import InvoiceDetailsForm from "@/components/createInvoice/InvoiceDetailsForm";
 import CommentsForm from "@/components/createInvoice/CommentsForm";
+import { useAtom } from "jotai";
+import { invoiceDetailsAtom, savedInvoiceDetailsAtom } from "@/store";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CreateInvoicePage = () => {
-  const [activeStep, setActiveStep] = useState("vendor");
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("currentTab");
+  const router = useRouter();
+  const [globalInvoiceDetails, setGlobalInvoiceDetails] =
+    useAtom(invoiceDetailsAtom);
+  const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
+  const [activeTab, setActiveTab] = useState(tab || "vendor");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setUploadedFile(acceptedFiles[0]);
@@ -25,6 +34,13 @@ const CreateInvoicePage = () => {
       "application/pdf": [".pdf"],
     },
   });
+  console.log(savedInvoices);
+  const navigateTab = (tab: string) => {
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set("currentTab", tab);
+    router.push(newUrl.toString());
+    setActiveTab(tab);
+  };
   return (
     <div className="flex flex-col">
       <header className="flex justify-start sm:justify-between items-center flex-col sm:flex-row">
@@ -38,21 +54,32 @@ const CreateInvoicePage = () => {
           </Link>
         </div>
         <div className="w-auto sm:w-1/2 !mb-1">
-          <TabContext value={activeStep}>
+          <TabContext value={activeTab}>
             <Box>
               <TabList
-                onChange={(_, value) => {
-                  console.log(value);
-                  setActiveStep(value);
-                }}
                 aria-label="lab API tabs example"
                 textColor="primary"
                 indicatorColor="primary"
                 className="overflow-x-scroll"
               >
-                <Tab label="Vendor Details" className="!font-bold" value="vendor" />
-                <Tab label="Invoice Details" className="!font-bold" value="invoice" />
-                <Tab label="Comments" className="!font-bold" value="comments" />
+                <Tab
+                  label="Vendor Details"
+                  className="!font-bold"
+                  value="vendor"
+                  sx={{ textTransform: "none" }}
+                />
+                <Tab
+                  label="Invoice Details"
+                  className="!font-bold"
+                  value="invoice"
+                  sx={{ textTransform: "none" }}
+                />
+                <Tab
+                  label="Comments"
+                  className="!font-bold"
+                  value="comments"
+                  sx={{ textTransform: "none" }}
+                />
               </TabList>
             </Box>
           </TabContext>
@@ -81,12 +108,17 @@ const CreateInvoicePage = () => {
                   To auto populate fields and save time
                 </p>
                 <div className="hidden sm:flex justify-center !py-8">
-                <Image src="/docUpload.png" width={250} height={250} alt="upload" />
+                  <Image
+                    src="/docUpload.png"
+                    width={250}
+                    height={250}
+                    alt="upload"
+                  />
                 </div>
                 <div className="!my-2">
                   <Button
-                    variant="outlined" 
-                    sx={{ textTransform: 'none' }}
+                    variant="outlined"
+                    sx={{ textTransform: "none" }}
                     className="!bg-white !text-gray-400 !border-gray-400"
                     endIcon={<VerticalAlignTopIcon />}
                   >
@@ -94,7 +126,8 @@ const CreateInvoicePage = () => {
                   </Button>
                 </div>
                 <p className="text-xs font-semibold text-gray-400 mt-2">
-                  <span className="text-blue-600">Click to upload</span> or Drag and drop
+                  <span className="text-blue-600">Click to upload</span> or Drag
+                  and drop
                 </p>
               </div>
             )}
@@ -102,8 +135,42 @@ const CreateInvoicePage = () => {
         </div>
 
         {/* Right side - Forms */}
-        <div className="w-auto sm:w-1/2">
-        
+        <div className="w-auto sm:w-1/2 !p-4">
+          {activeTab === "vendor" && (
+            <VendorDetailsForm
+              onNavigate={(values: any, step: string) => {
+                console.log("Here is the second step", values);
+                setGlobalInvoiceDetails((prev) => ({
+                  ...prev,
+                  vendor: values.vendor,
+                }));
+                navigateTab(step);
+              }}
+            />
+          )}
+          {activeTab === "invoice" && (
+            <InvoiceDetailsForm
+              onNavigate={(values: any, step: string) => {
+                console.log("Here it the invoice details onSubmit", values);
+                setGlobalInvoiceDetails((prev) => ({
+                  ...prev,
+                  invoiceDetails: {
+                    ...prev.invoiceDetails,
+                    ...values,
+                  },
+                }));
+
+                navigateTab(step);
+              }}
+            />
+          )}
+          {activeTab === "comments" && (
+            <CommentsForm
+              onNavigate={(step: string) => {
+                navigateTab(step);
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
