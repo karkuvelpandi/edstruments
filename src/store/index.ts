@@ -3,6 +3,7 @@ import { atomWithStorage } from 'jotai/utils';
 
 export interface InvoiceDetailsAtom {
     id: string;
+    pdfFile: string;
     vendor: string;
     invoiceDetails: {
       poNumber: string;
@@ -17,28 +18,9 @@ export interface InvoiceDetailsAtom {
     comments: any[];
   }
 
-
-// function createLocalStorageAtom<T>(key: string, initialValue: T[]) {
-//   const baseAtom = atom(
-//     typeof window !== "undefined" && localStorage.getItem(key)
-//       ? JSON.parse(localStorage.getItem(key) as string)
-//       : initialValue
-//   );
-
-//   const arrayAtom = atom(
-//     (get) => get(baseAtom),
-//     (get, set, newValue) => {
-//       set(baseAtom, newValue);
-//       if (typeof window !== "undefined") {
-//         localStorage.setItem(key, JSON.stringify(newValue));
-//       }
-//     }
-//   );
-
-//   return arrayAtom;
-// }
 export const invoiceDetailsInitialState = {
     id: "",
+    pdfFile: "",
     vendor: "",
     invoiceDetails:{
         poNumber: "",
@@ -53,8 +35,5 @@ export const invoiceDetailsInitialState = {
     comments: []
 }
 export const invoiceDetailsAtom = atom(invoiceDetailsInitialState as InvoiceDetailsAtom)
-
-
-// export const savedInvoiceDetailsAtom = createLocalStorageAtom("invoice details", []);
 export const savedInvoiceDetailsAtom = atomWithStorage('SavedInvoiceDetailsKey', [] as InvoiceDetailsAtom[]);
 export const draftedInvoiceDetailsAtom = atomWithStorage('DraftedInvoiceDetailsKey', [] as InvoiceDetailsAtom[]);

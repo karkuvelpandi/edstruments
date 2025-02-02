@@ -5,8 +5,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAtom } from "jotai";
 import { draftedInvoiceDetailsAtom, invoiceDetailsAtom, invoiceDetailsInitialState, savedInvoiceDetailsAtom } from "@/store";
 import { generateUniqueId } from "@/store/utils";
+import { useRouter } from "next/navigation";
 
 const SubmitButton = ({ backButton, onNavigate }: { backButton: ReactNode, onNavigate: (step: string) => void }) => {
+  const router = useRouter();
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
   useAtom(invoiceDetailsAtom);
   const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
@@ -24,7 +26,7 @@ const SubmitButton = ({ backButton, onNavigate }: { backButton: ReactNode, onNav
   console.log(globalInvoiceDetails, "Submitting");
   setDraftInvoices([...draftedInvoices,{ ...globalInvoiceDetails, id:generateUniqueId()}]);
   setGlobalInvoiceDetails(invoiceDetailsInitialState)
-   onNavigate('vendor');
+   router.push("/dashboard?currentTab=drafted");
  };
 
  

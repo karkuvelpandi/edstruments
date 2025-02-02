@@ -14,6 +14,7 @@ import CommentsForm from "@/components/createInvoice/CommentsForm";
 import { useAtom } from "jotai";
 import { invoiceDetailsAtom, savedInvoiceDetailsAtom } from "@/store";
 import { useRouter, useSearchParams } from "next/navigation";
+import DocumentUpload from "@/components/createInvoice/DocumentUpload";
 
 
 const CreateInvoice = () => {
@@ -24,18 +25,7 @@ const CreateInvoice = () => {
     useAtom(invoiceDetailsAtom);
   const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
   const [activeTab, setActiveTab] = useState(tab || "vendor");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setUploadedFile(acceptedFiles[0]);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "application/pdf": [".pdf"],
-    },
-  });
-  console.log(savedInvoices);
+ 
   const navigateTab = (tab: string) => {
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set("currentTab", tab);
@@ -88,52 +78,7 @@ const CreateInvoice = () => {
       </header>
       <div className="flex flex-grow flex-1 bg-gray-100 flex-col sm:flex-row">
         {/* Left side - Upload area */}
-        <div className="w-auto h-auto sm:min-h-[85vh] sm:w-1/2 !p-4">
-          <div
-            {...getRootProps()}
-            className={`sm:h-full flex flex-col cursor-pointer items-center justify-center p-8 transition-colors border-2 border-gray-300 border-dashed rounded-sm
-            ${isDragActive ? "bg-primary/10" : "bg-white hover:bg-gray-100"}`}
-          >
-            <input {...getInputProps()} />
-            {uploadedFile ? (
-              <div className="text-center">
-                {/* <FileText className="w-8 h-8 text-primary mx-auto mb-2" /> */}
-                <p className="text-sm text-gray-600">{uploadedFile.name}</p>
-              </div>
-            ) : (
-              <div className="text-center !py-5">
-                <p className="text-lg font-semibold mb-2">
-                  Upload your invoice
-                </p>
-                <p className="text-sm text-gray-500">
-                  To auto populate fields and save time
-                </p>
-                <div className="hidden sm:flex justify-center !py-8">
-                  <Image
-                    src="/docUpload.png"
-                    width={250}
-                    height={250}
-                    alt="upload"
-                  />
-                </div>
-                <div className="!my-2">
-                  <Button
-                    variant="outlined"
-                    sx={{ textTransform: "none" }}
-                    className="!bg-white !text-gray-400 !border-gray-400"
-                    endIcon={<VerticalAlignTopIcon />}
-                  >
-                    Upload File
-                  </Button>
-                </div>
-                <p className="text-xs font-semibold text-gray-400 mt-2">
-                  <span className="text-blue-600">Click to upload</span> or Drag
-                  and drop
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+       <DocumentUpload />
 
         {/* Right side - Forms */}
         <div className="w-auto sm:w-1/2 !p-4">

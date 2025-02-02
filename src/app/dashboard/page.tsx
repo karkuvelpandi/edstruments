@@ -12,14 +12,28 @@ import {
   savedInvoiceDetailsAtom,
 } from "@/store";
 import { useAtom } from "jotai";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Dashboard = () => {
+    const searchParams = useSearchParams();
+    const tab = searchParams.get("currentTab");
+    const router = useRouter();
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState("saved");
+  const [activeTab, setActiveTab] = useState(tab || "saved");
+  const [globalInvoiceDetails, setGlobalInvoiceDetails] =
+      useAtom(invoiceDetailsAtom);
   const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
   const [draftedInvoices, setDraftInvoices] = useAtom(
     draftedInvoiceDetailsAtom
   );
+  const onPopulate = (id: string) => {
+    const currentInvoice = draftedInvoices.find((invoice) => invoice.id === id);
+    if (currentInvoice) {
+      setGlobalInvoiceDetails(currentInvoice);
+      setDraftInvoices(draftedInvoices.filter((invoice) => invoice.id !== id));
+      router.push("/dashboard/create-invoice?currentTab=vendor");
+    }
+  };
   return (
     <Container className="!pt-4 !space-y-4">
       <h1 className="text-3xl text-center">
@@ -41,7 +55,9 @@ const Dashboard = () => {
             <TabList
               onChange={(_, value) => {
                 console.log(value);
-                // navigateTab(value);
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set("currentTab", value);
+                router.push(newUrl.toString());
                 setActiveTab(value);
               }}
               aria-label="lab API tabs example"
@@ -66,6 +82,7 @@ const Dashboard = () => {
           <InvoiceTable
             rows={activeTab === "saved" ? savedInvoices : draftedInvoices}
             context={activeTab}
+            onPopulate={onPopulate}
           />
         </div>
       </div>
