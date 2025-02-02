@@ -11,20 +11,18 @@ import {
   savedInvoiceDetailsAtom,
 } from "@/store";
 import ModalWrapper from "../ui/ModalWrapper";
-import { Document, Page } from "react-pdf";
-import PDFViewerComponent from "./components/PDFViewer";
+import PdfReactPdf from "./components/PDFViewer";
 
 const DocumentUpload = () => {
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
     useAtom(invoiceDetailsAtom);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string >('');
+  const [pdfUrl, setPdfUrl] = useState<string>("");
   const [showPdf, setShowPdf] = useState(false);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file && file.type === "application/pdf") {
       setUploadedFile(file);
-
       // Convert file to base64 using FileReader
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -56,18 +54,23 @@ const DocumentUpload = () => {
       >
         <input {...getInputProps()} />
         {uploadedFile ? (
-          <div className="text-center">
-            {/* <FileText className="w-8 h-8 text-primary mx-auto mb-2" /> */}
+          <div className="text-center !space-y-2 !py-3" onClick={(e) => e.stopPropagation()}>
             <p className="text-sm text-gray-600">{uploadedFile.name}</p>
-            <Button onClick={() => setShowPdf(true)}>View PDF</Button>
+            <Button variant="outlined" onClick={() => setShowPdf(true)}>View PDF</Button>
+            <p>This PDF will be saved when you submit the invoice details form.</p>
             {showPdf && (
-              <ModalWrapper
-                open={showPdf}
-                onClose={() => setShowPdf(false)}
-                title="Invoice Preview"
+              <div
+                className="pointer-events-none"
+                onClick={(e) => e.stopPropagation()}
               >
-               <PDFViewerComponent pdfUrl={pdfUrl}/>
-              </ModalWrapper>
+                <ModalWrapper
+                  open={showPdf}
+                  onClose={() => setShowPdf(false)}
+                  title="Invoice Preview"
+                >
+                  <PdfReactPdf src={pdfUrl} />
+                </ModalWrapper>
+              </div>
             )}
           </div>
         ) : (

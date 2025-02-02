@@ -19,7 +19,7 @@ const SubmitButton = ({ backButton, onNavigate }: { backButton: ReactNode, onNav
   console.log(globalInvoiceDetails, "Submitting");
   setSavedInvoices([...savedInvoices,{ ...globalInvoiceDetails, id:generateUniqueId()}]);
   setGlobalInvoiceDetails(invoiceDetailsInitialState)
-   onNavigate('vendor');
+  router.push("/dashboard?currentTab=saved");
  };
 
  const onDraft = () => {
@@ -31,7 +31,7 @@ const SubmitButton = ({ backButton, onNavigate }: { backButton: ReactNode, onNav
 
  
   return (
-    <Box p={2} gap={2} className="flex justify-around bg-white">
+    <Box p={2} gap={2} className="flex justify-around bg-white !mt-2">
       <IconButton>
         <MoreVertIcon />
       </IconButton>

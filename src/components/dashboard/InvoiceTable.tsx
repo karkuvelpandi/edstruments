@@ -15,22 +15,27 @@ export default function InvoiceTable({
   rows,
   context,
   onPopulate,
+  onViewPDF,
 }: {
   rows: InvoiceDetailsAtom[];
   context: string;
   onPopulate: (id: string) => void;
+  onViewPDF: (id: string) => void;
 }) {
   console.log(rows);
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper}
+    sx={{
+        maxHeight: 600, // Set the desired table height
+      }}>
+      <Table sx={{ minWidth: 650}} stickyHeader size="small" aria-label="simple table">
         <TableHead>
-          <TableRow className="bg-gray-200">
-            <TableCell>Vendor</TableCell>
-            <TableCell>Invoice Date</TableCell>
-            <TableCell>PO Number</TableCell>
-            <TableCell>Invoice Amount</TableCell>
-            {context === "drafted" && <TableCell>Actions</TableCell>}
+          <TableRow className="!bg-gray-200">
+            <TableCell className="!bg-gray-200">Vendor</TableCell>
+            <TableCell className="!bg-gray-200">Invoice Date</TableCell>
+            <TableCell className="!bg-gray-200">PO Number</TableCell>
+            <TableCell className="!bg-gray-200">Invoice Amount</TableCell>
+             <TableCell className="!bg-gray-200">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -42,9 +47,9 @@ export default function InvoiceTable({
             </TableRow>
           ) : (
             rows.length > 0 &&
-            rows?.map((row: InvoiceDetailsAtom) => (
+            rows?.map((row: InvoiceDetailsAtom, index) => (
               <TableRow
-                key={row.vendor}
+                key={row.vendor + `-${index}` }
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -59,11 +64,21 @@ export default function InvoiceTable({
                 </TableCell>
                 {context === "drafted" && (
                   <TableCell>
-                    <button onClick={()=> onPopulate(row.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer">
+                    <button disabled={!row.pdfFile} onClick={()=> onPopulate(row.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500">
                       Populate
                     </button>
                   </TableCell>
                 )}
+                {
+                  context === "saved" && (
+                    <TableCell>
+                      <button disabled={!row.pdfFile} onClick={()=> onViewPDF(row.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500">
+                        View PDF
+                      </button>
+                    </TableCell>
+                  )
+                }
+
               </TableRow>
             ))
           )}

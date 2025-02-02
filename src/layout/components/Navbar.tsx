@@ -9,7 +9,7 @@ const Navbar = () => {
   const { user, logout } = useUser();
   console.log(user);
   return (
-    <nav className="fixed top-0 left-0 right-0 !w-full z-50 bg-white">
+    <nav className="fixed top-0 left-0 right-0 !w-full z-50 bg-white shadow-sm shadow-gray-200">
       <Container className="h-16 w-full flex justify-between items-center">
         <span className="text-2xl font-bold">Edstruments</span>
         {user && (

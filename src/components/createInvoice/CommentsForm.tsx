@@ -82,7 +82,7 @@ const CommentsForm = ({
   };
 
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between !h-full">
       <div className="flex-1">
         <SectionHeader icon={<ChatIcon color="primary" />} title="Comments" />
 

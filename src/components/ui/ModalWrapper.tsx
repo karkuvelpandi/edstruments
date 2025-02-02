@@ -17,7 +17,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   onClose,
   title,
   children,
-  maxWidth = 'sm',
+  maxWidth,
   hideCloseButton = false,
   backgroundColor = 'white',
 }) => {
@@ -31,23 +31,19 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         timeout: 500,
       }}
     >
-      <Fade in={open}>
         <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: { xs: '90%', sm: 'auto' },
-            maxWidth: maxWidth,
-            bgcolor: backgroundColor,
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 3,
-            outline: 0,
-          }}
+        sx={{
+          position: 'relative',
+          minWidth: 300,
+          maxWidth: maxWidth || '90%',
+          mx: 'auto',
+          bgcolor: backgroundColor,
+          zIndex: 1000,
+          height: "90vh",
+          padding: "20px",
+          mt: "5vh",
+        }}
         >
-          {/* Title and Close Button */}
           {title && (
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h6">{title}</Typography>
@@ -58,11 +54,8 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
               )}
             </Box>
           )}
-
-          {/* Modal Body */}
-          <Box sx={{ mt: 2 }}>{children}</Box>
+          <Box sx={{ mt: 2, position: "relative", height:'78vh' }}>{children}</Box>
         </Box>
-      </Fade>
     </Modal>
   );
 };

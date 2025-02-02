@@ -33,8 +33,8 @@ const CreateInvoice = () => {
     setActiveTab(tab);
   };
   return (
-    <div className="flex flex-col">
-      <header className="flex justify-start sm:justify-between items-center flex-col sm:flex-row">
+    <div className="flex flex-col !mt-2 ">
+      <header className="flex justify-start sm:justify-between items-center flex-col sm:flex-row sm:sticky sm:top-16 sm:bg-white sm:z-10 !mt-2">
         <div className="w-auto sm:w-1/2">
           <Link
             href={"/dashboard"}

@@ -14,15 +14,18 @@ import {
 import { useAtom } from "jotai";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import PdfReactPdf from "@/components/createInvoice/components/PDFViewer";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 
 const Dashboard = () => {
-    const searchParams = useSearchParams();
-    const tab = searchParams.get("currentTab");
-    const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("currentTab");
+  const router = useRouter();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState(tab || "saved");
+  const [pdfURL, setPdfUrl] = useState("");
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
-      useAtom(invoiceDetailsAtom);
+    useAtom(invoiceDetailsAtom);
   const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
   const [draftedInvoices, setDraftInvoices] = useAtom(
     draftedInvoiceDetailsAtom
@@ -35,19 +38,21 @@ const Dashboard = () => {
       router.push("/dashboard/create-invoice?currentTab=vendor");
     }
   };
+  const onViewPDF = (id: string) => {
+    const currentInvoice = savedInvoices.find((invoice) => invoice.id === id);
+    if (currentInvoice) {
+      const pdfUrl = currentInvoice.pdfFile;
+      setPdfUrl(pdfUrl);
+    }
+  };
   return (
-    <Container className="!pt-4 !space-y-4">
+    <Container className="!pt-8 !space-y-4">
       <h1 className="text-3xl text-center">
         Welcome, {user?.name || "Guest"}!
       </h1>
       <div className="flex justify-center">
-        <Link
-          href="/dashboard/create-invoice?currentTab=vendor"
-        >
-          <Button
-            variant="outlined"
-            endIcon={<ArrowForwardIcon />}
-          >
+        <Link href="/dashboard/create-invoice?currentTab=vendor">
+          <Button variant="outlined" endIcon={<ArrowForwardIcon />}>
             Create Invoice
           </Button>
         </Link>
@@ -86,13 +91,22 @@ const Dashboard = () => {
             rows={activeTab === "saved" ? savedInvoices : draftedInvoices}
             context={activeTab}
             onPopulate={onPopulate}
+            onViewPDF={onViewPDF}
           />
         </div>
+        {pdfURL && (
+          <ModalWrapper
+            open={pdfURL !== ""}
+            onClose={() => setPdfUrl('')}
+            title="Invoice Preview"
+          >
+            <PdfReactPdf src={pdfURL} />
+          </ModalWrapper>
+        )}
       </div>
     </Container>
   );
 };
-
 
 export default function DashboardPage() {
   return (
