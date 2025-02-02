@@ -31,10 +31,10 @@ const FormikDatePicker = ({
             <DatePicker
               {...field}
               value={field.value ? dayjs(field.value) : null}
-              onChange={(date) => {
-                const formattedDate = date ? date?.format("YYYY-MM-DD") : "";
-                form.setFieldValue(name, formattedDate);
-              }}
+              // onChange={(date) => {
+              //   const formattedDate = date ? date?.format("YYYY-MM-DD") : "";
+              //   form.setFieldValue(name, formattedDate);
+              // }}
               // renderInput={(params) => (
               //   <TextField
               //     {...params}

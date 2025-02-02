@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
 import { KeyboardBackspace, Upload } from "@mui/icons-material";
 import { Box, Button, Tab } from "@mui/material";
 import { useDropzone } from "react-dropzone";
@@ -15,7 +15,8 @@ import { useAtom } from "jotai";
 import { invoiceDetailsAtom, savedInvoiceDetailsAtom } from "@/store";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const CreateInvoicePage = () => {
+
+const CreateInvoice = () => {
   const searchParams = useSearchParams();
   const tab = searchParams.get("currentTab");
   const router = useRouter();
@@ -177,4 +178,11 @@ const CreateInvoicePage = () => {
   );
 };
 
-export default CreateInvoicePage;
+
+export default function CreateInvoicePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateInvoice />
+    </Suspense>
+  );
+}
