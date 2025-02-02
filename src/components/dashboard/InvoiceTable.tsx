@@ -7,9 +7,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import TableFooter from "@mui/material/TableFooter";
 import { InvoiceDetailsAtom } from "@/store";
 import { formatAmount } from "@/store/utils";
+import { CircularProgress } from "@mui/material";
 
 export default function InvoiceTable({
   rows,
@@ -22,20 +22,28 @@ export default function InvoiceTable({
   onPopulate: (id: string) => void;
   onViewPDF: (id: string) => void;
 }) {
-  console.log(rows);
+  const [isPopulating, setIsPopulating] = React.useState(false);
+
   return (
-    <TableContainer component={Paper}
-    sx={{
-        maxHeight: 600, // Set the desired table height
-      }}>
-      <Table sx={{ minWidth: 650}} stickyHeader size="small" aria-label="simple table">
+    <TableContainer
+      component={Paper}
+      sx={{
+        maxHeight: 600,
+      }}
+    >
+      <Table
+        sx={{ minWidth: 650 }}
+        stickyHeader
+        size="small"
+        aria-label="simple table"
+      >
         <TableHead>
           <TableRow className="!bg-gray-200">
             <TableCell className="!bg-gray-200">Vendor</TableCell>
             <TableCell className="!bg-gray-200">Invoice Date</TableCell>
             <TableCell className="!bg-gray-200">PO Number</TableCell>
             <TableCell className="!bg-gray-200">Invoice Amount</TableCell>
-             <TableCell className="!bg-gray-200">Actions</TableCell>
+            <TableCell className="!bg-gray-200">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -49,7 +57,7 @@ export default function InvoiceTable({
             rows.length > 0 &&
             rows?.map((row: InvoiceDetailsAtom, index) => (
               <TableRow
-                key={row.vendor + `-${index}` }
+                key={row.vendor + `-${index}`}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -64,21 +72,28 @@ export default function InvoiceTable({
                 </TableCell>
                 {context === "drafted" && (
                   <TableCell>
-                    <button disabled={!row.pdfFile} onClick={()=> onPopulate(row.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500">
-                      Populate
+                    <button
+                      onClick={() => {
+                        onPopulate(row.id);
+                        setIsPopulating(true);
+                      }}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500"
+                    >
+                      Populate {isPopulating && <CircularProgress size={20} />}
                     </button>
                   </TableCell>
                 )}
-                {
-                  context === "saved" && (
-                    <TableCell>
-                      <button disabled={!row.pdfFile} onClick={()=> onViewPDF(row.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500">
-                        View PDF
-                      </button>
-                    </TableCell>
-                  )
-                }
-
+                {context === "saved" && (
+                  <TableCell>
+                    <button
+                      disabled={!row.pdfFile}
+                      onClick={() => onViewPDF(row.id)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold !py-2 !px-4 rounded cursor-pointer disabled:cursor-auto disabled:opacity-40 disabled:hover:bg-blue-500"
+                    >
+                      View PDF
+                    </button>
+                  </TableCell>
+                )}
               </TableRow>
             ))
           )}

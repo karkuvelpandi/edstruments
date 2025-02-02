@@ -34,8 +34,8 @@ const Dashboard = () => {
     const currentInvoice = draftedInvoices.find((invoice) => invoice.id === id);
     if (currentInvoice) {
       setGlobalInvoiceDetails(currentInvoice);
-      setDraftInvoices(draftedInvoices.filter((invoice) => invoice.id !== id));
       router.push("/dashboard/create-invoice?currentTab=vendor");
+      setDraftInvoices(draftedInvoices.filter((invoice) => invoice.id !== id));
     }
   };
   const onViewPDF = (id: string) => {
@@ -62,7 +62,6 @@ const Dashboard = () => {
           <Box>
             <TabList
               onChange={(_, value) => {
-                console.log(value);
                 const newUrl = new URL(window.location.href);
                 newUrl.searchParams.set("currentTab", value);
                 router.push(newUrl.toString());

@@ -16,14 +16,12 @@ const SubmitButton = ({ backButton, onNavigate }: { backButton: ReactNode, onNav
 
      
  const onSave = () => {
-  console.log(globalInvoiceDetails, "Submitting");
   setSavedInvoices([...savedInvoices,{ ...globalInvoiceDetails, id:generateUniqueId()}]);
   setGlobalInvoiceDetails(invoiceDetailsInitialState)
   router.push("/dashboard?currentTab=saved");
  };
 
  const onDraft = () => {
-  console.log(globalInvoiceDetails, "Submitting");
   setDraftInvoices([...draftedInvoices,{ ...globalInvoiceDetails, id:generateUniqueId()}]);
   setGlobalInvoiceDetails(invoiceDetailsInitialState)
    router.push("/dashboard?currentTab=drafted");

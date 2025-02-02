@@ -37,18 +37,14 @@ const Auth = () => {
   // Handle form submission and persistence
   const handleSubmit = (values: any, { resetForm }: any, formType: string) => {
     toast("Sign Up Successful!", "success");
-    console.log(values);
     const existingUser = localStorage.getItem(`User-${values.email}`);
     const userObj = existingUser && JSON.parse(existingUser);
-    console.log(userObj,existingUser, "Handle Submit");
     if (userObj?.email && formType === "login") {
-      console.log("Test1")
       if (
         userObj.email === values.email &&
         userObj.password === values.password
       ) {
         localStorage.setItem("currentLoggedInUser", values.email);
-        console.log("Test2")
         toast("Login Successful!", "success");
         alert("Login Successful!");
         setUser(userObj);
@@ -56,24 +52,20 @@ const Auth = () => {
         router.push("/dashboard");
         return;
       } else {
-        console.log("Test3")
         toast("Invalid credentials", "error");
         alert("Invalid credentials");
         return;
       }
     } else if (!userObj && formType === "login") {
-      console.log("User does not exist. Please sign up.");
       toast("User does not exist. Please sign up.", "error");
       alert("User does not exist. Please sign up.");
       return;
     }
     if (userObj?.email && formType === "signup") {
-      console.log("Test4")
       toast("User already exists. Please login.", "error");
       alert("User already exists. Please login.");
       return;
     }
-    console.log("Test5")
     localStorage.setItem("currentLoggedInUser", values.email);
     localStorage.setItem(`User-${values.email}`, JSON.stringify(values));
     toast("Sign Up Successful!", "success");

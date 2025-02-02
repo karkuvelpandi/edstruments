@@ -1,15 +1,11 @@
 "use client";
 import React, { useCallback, useState } from "react";
-import { Box, Button, Tab } from "@mui/material";
+import { Button } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 import { useAtom } from "jotai";
-import {
-  draftedInvoiceDetailsAtom,
-  invoiceDetailsAtom,
-  savedInvoiceDetailsAtom,
-} from "@/store";
+import { invoiceDetailsAtom } from "@/store";
 import ModalWrapper from "../ui/ModalWrapper";
 import PdfReactPdf from "./components/PDFViewer";
 
@@ -46,7 +42,7 @@ const DocumentUpload = () => {
     },
   });
   return (
-    <div className="w-auto h-auto sm:min-h-[85vh] sm:w-1/2 !p-4">
+    <div className="w-auto h-auto sm:!h-[80vh] sm:w-1/2 !p-4 sm:sticky sm:top-30 ">
       <div
         {...getRootProps()}
         className={`sm:h-full flex flex-col cursor-pointer items-center justify-center p-8 transition-colors border-2 border-gray-300 border-dashed rounded-sm
@@ -54,10 +50,17 @@ const DocumentUpload = () => {
       >
         <input {...getInputProps()} />
         {uploadedFile ? (
-          <div className="text-center !space-y-2 !py-3" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="text-center !space-y-2 !py-3"
+            onClick={(e) => e.stopPropagation()}
+          >
             <p className="text-sm text-gray-600">{uploadedFile.name}</p>
-            <Button variant="outlined" onClick={() => setShowPdf(true)}>View PDF</Button>
-            <p>This PDF will be saved when you submit the invoice details form.</p>
+            <Button variant="outlined" onClick={() => setShowPdf(true)}>
+              View PDF
+            </Button>
+            <p>
+              This PDF will be saved when you submit the invoice details form.
+            </p>
             {showPdf && (
               <div
                 className="pointer-events-none"

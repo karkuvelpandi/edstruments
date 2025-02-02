@@ -57,7 +57,6 @@ const VendorDetailsForm = ({
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
   const [openVendorDetails, setOpenVendorDetails] = useState(false);
   const getInitialValues = () => {
-    console.log(globalInvoiceDetails, "this is on first step");
     return { vendor: globalInvoiceDetails?.vendor || "" };
   };
 
@@ -70,7 +69,6 @@ const VendorDetailsForm = ({
   }, []);
   const handleSubmit = (values: any, { resetForm }: any) => {
     onNavigate?.(values, 'invoice');
-    console.log(globalInvoiceDetails, "this is on first step");
   };
   return (
     <div>

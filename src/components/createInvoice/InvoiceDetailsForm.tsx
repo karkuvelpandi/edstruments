@@ -2,26 +2,15 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import {
-  Button,
-  Typography,
-  Box,
-  Tabs,
-  Tab,
-  InputAdornment,
-} from "@mui/material";
-import { useState } from "react";
-import { useUser } from "@/context/UserProvider";
-import { useRouter } from "next/navigation";
+import { Button, Box, InputAdornment } from "@mui/material";
 import FormikTextField from "../auth/components/FormikTextField";
 import { TfiReceipt } from "react-icons/tfi";
 import SectionHeader from "../ui/SectionHeader";
 import FormikSelect from "../auth/components/FormikSelect";
-import FormikDatePicker from "../Form/FormikDatePicker";
-import { AccountCircle } from "@mui/icons-material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useAtom } from "jotai";
 import { invoiceDetailsAtom } from "@/store";
+import TabsSegmentedControls from "../ui/JoyTabs";
 
 const defaultPONumbers = [
   { value: "PO-1001", label: "PO-1001 - Office Supplies" },
@@ -54,6 +43,29 @@ const defaultPaymentTerms = [
   { value: "45D", label: "45 Days" },
   { value: "60D", label: "60 Days" },
 ];
+
+const defaultDepartments = [
+  { value: "ADMIN", label: "ADMIN - Administration" },
+  { value: "ADMISSIONS", label: "ADMISSIONS - Student Admissions" },
+  { value: "ACADEMICS", label: "ACADEMICS - Curriculum and Instruction" },
+  { value: "STUDENT_AFFAIRS", label: "STUDENT_AFFAIRS - Student Affairs" },
+  { value: "EXAMS", label: "EXAMS - Examinations & Assessment" },
+  { value: "COUNSELING", label: "COUNSELING - Counseling & Guidance" },
+  { value: "RESEARCH", label: "RESEARCH - Research & Development" },
+];
+const defaultLocation = [
+  { value: "NYC", label: "NYC - New York City" },
+  { value: "LA", label: "LA - Los Angeles" },
+  { value: "CHI", label: "CHI - Chicago" },
+  { value: "HOU", label: "HOU - Houston" },
+  { value: "PHX", label: "PHX - Phoenix" },
+  { value: "DAL", label: "DAL - Dallas" },
+  { value: "SFO", label: "SFO - San Francisco" },
+  { value: "SEA", label: "SEA - Seattle" },
+  { value: "MIA", label: "MIA - Miami" },
+  { value: "ATL", label: "ATL - Atlanta" },
+];
+const defaultAccount = [{ value: "Test", label: "SAVINGS - Savings Account" }];
 
 const invoiceSchema = Yup.object().shape({
   poNumber: Yup.string()
@@ -92,6 +104,28 @@ const invoiceSchema = Yup.object().shape({
     .required("Invoice Description is required")
     .min(10, "Description must be at least 10 characters")
     .max(500, "Description cannot exceed 500 characters"),
+
+  expensesLineAmount: Yup.number()
+    .required("Total Amount is required")
+    .positive("Amount must be a positive number")
+    .typeError("Please enter a valid number"),
+
+  department: Yup.string()
+    .required("Please select a Department")
+    .notOneOf([""], "Please select a valid Department"),
+
+  expenseAccount: Yup.string()
+    .required("Please select a Account")
+    .notOneOf([""], "Please select a valid Account"),
+
+  expenseLocation: Yup.string()
+    .required("Please select a Location")
+    .notOneOf([""], "Please select a valid Location"),
+
+  expenseDescription: Yup.string()
+    .required("Invoice Description is required")
+    .min(10, "Description must be at least 10 characters")
+    .max(500, "Description cannot exceed 500 characters"),
 });
 
 const InvoiceDetailsForm = ({
@@ -101,7 +135,6 @@ const InvoiceDetailsForm = ({
 }) => {
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
     useAtom(invoiceDetailsAtom);
-  //  const [selectedPO, setSelectedPO] = useState<any>(null);
   const getInitialValues = () => {
     return (
       globalInvoiceDetails.invoiceDetails || {
@@ -113,6 +146,11 @@ const InvoiceDetailsForm = ({
         invoiceDueDate: "",
         glPostDate: "",
         invoiceDescription: "",
+        expensesLineAmount: "",
+        department: "",
+        expenseAccount: "",
+        expenseLocation: "",
+        expenseDescription: "",
       }
     );
   };
@@ -144,7 +182,7 @@ const InvoiceDetailsForm = ({
               />
               <Box display="flex" flexDirection="column" gap={1}>
                 <SectionHeader
-                  title="Invoice details"
+                  title="Invoice Details"
                   className="!text-lg !mt-4"
                 />
                 <Box
@@ -253,6 +291,107 @@ const InvoiceDetailsForm = ({
                   size="small"
                 />
               </Box>
+              <Box display="flex" flexDirection="column" gap={1}>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                  mt={4}
+                  gap={1}
+                >
+                  <span className="!text-lg font-bold">Expense Details</span>
+                  <span className="inline-flex justify-center items-center gap-2">
+                    <span>
+                      {" "}
+                      $ 0.00/ <span className="text-blue-500">$ 0.00</span>
+                    </span>
+                    <span>
+                      <TabsSegmentedControls />
+                    </span>
+                  </span>
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent={"space-between"}
+                  gap={1}
+                >
+                  <div className="w-1/2">
+                    <FormikTextField
+                      name="expensesLineAmount"
+                      topLabel="Line Amount"
+                      placeholder="0.0"
+                      type="number"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment
+                              position="start"
+                              className="w-5 h-10"
+                            >
+                              <span className="inline-block text-center content-center absolute left-0 h-10 w-8 bg-gray-300">
+                                <AttachMoneyIcon />
+                              </span>
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <span className="text-sm text-gray-400">USD</span>
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <FormikSelect
+                      name="department"
+                      topLabel="Department"
+                      placeholder="Select Department"
+                      options={defaultDepartments}
+                      type="text"
+                      size="small"
+                    />
+                  </div>
+                </Box>
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  justifyContent={"space-between"}
+                  gap={1}
+                >
+                  <div className="w-1/2">
+                    <FormikSelect
+                      name="expenseAccount"
+                      topLabel="Account"
+                      placeholder="Select Account"
+                      options={defaultAccount}
+                      type="text"
+                      size="small"
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <FormikSelect
+                      name="expenseLocation"
+                      topLabel="Expense Location"
+                      placeholder="Select Location"
+                      options={defaultLocation}
+                      type="text"
+                      size="small"
+                    />
+                  </div>
+                </Box>
+                <FormikTextField
+                  name="expenseDescription"
+                  topLabel="Description"
+                  multiline
+                  placeholder="Enter Description"
+                  type="text"
+                  size="small"
+                />
+              </Box>
               <Box
                 display="flex"
                 flexDirection="row"
@@ -264,14 +403,14 @@ const InvoiceDetailsForm = ({
                   // disabled={!values.poNumber || !isValid || !dirty}
                   variant="outlined"
                   color="primary"
-                  onClick ={() => onNavigate?.(values, "vendor")}
+                  onClick={() => onNavigate?.(values, "vendor")}
                   sx={{ textTransform: "none" }}
                 >
                   Back
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!values.poNumber || !isValid }
+                  disabled={!values.poNumber || !isValid}
                   variant="contained"
                   color="primary"
                   sx={{ textTransform: "none" }}

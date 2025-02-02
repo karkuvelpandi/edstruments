@@ -1,18 +1,14 @@
 "use client";
-import React, { Suspense, useCallback, useState } from "react";
-import { KeyboardBackspace, Upload } from "@mui/icons-material";
-import { Box, Button, Tab } from "@mui/material";
-import { useDropzone } from "react-dropzone";
+import React, { Suspense, useState } from "react";
+import { KeyboardBackspace } from "@mui/icons-material";
+import { Box, Tab } from "@mui/material";
 import { TabContext, TabList } from "@mui/lab";
 import Link from "next/link";
-import Image from "next/image";
-import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
-import FormikTextField from "@/components/auth/components/FormikTextField";
 import VendorDetailsForm from "@/components/createInvoice/VendorDetailsForm";
 import InvoiceDetailsForm from "@/components/createInvoice/InvoiceDetailsForm";
 import CommentsForm from "@/components/createInvoice/CommentsForm";
 import { useAtom } from "jotai";
-import { invoiceDetailsAtom, savedInvoiceDetailsAtom } from "@/store";
+import { invoiceDetailsAtom } from "@/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import DocumentUpload from "@/components/createInvoice/DocumentUpload";
 
@@ -23,7 +19,6 @@ const CreateInvoice = () => {
   const router = useRouter();
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
     useAtom(invoiceDetailsAtom);
-  const [savedInvoices, setSavedInvoices] = useAtom(savedInvoiceDetailsAtom);
   const [activeTab, setActiveTab] = useState(tab || "vendor");
  
   const navigateTab = (tab: string) => {
@@ -85,7 +80,6 @@ const CreateInvoice = () => {
           {activeTab === "vendor" && (
             <VendorDetailsForm
               onNavigate={(values: any, step: string) => {
-                console.log("Here is the second step", values);
                 setGlobalInvoiceDetails((prev) => ({
                   ...prev,
                   vendor: values.vendor,
@@ -97,7 +91,6 @@ const CreateInvoice = () => {
           {activeTab === "invoice" && (
             <InvoiceDetailsForm
               onNavigate={(values: any, step: string) => {
-                console.log("Here it the invoice details onSubmit", values);
                 setGlobalInvoiceDetails((prev) => ({
                   ...prev,
                   invoiceDetails: {

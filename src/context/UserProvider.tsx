@@ -34,12 +34,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const toast = (message: string, variant = 'info' as ("info" | "default" | "error" | "success" | "warning")) => enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
   useEffect(() => {
     const currentUserEmail = localStorage.getItem("currentLoggedInUser");
-    console.log("Current user:", currentUserEmail);
     const storedUser = localStorage.getItem("User-" + currentUserEmail);
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
-      console.log("User not found, redirecting to login page");
       router.push("/auth");
     }
   }, [router]);
