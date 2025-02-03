@@ -13,7 +13,7 @@ const DocumentUpload = () => {
   const [globalInvoiceDetails, setGlobalInvoiceDetails] =
     useAtom(invoiceDetailsAtom);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [pdfUrl, setPdfUrl] = useState<string>(globalInvoiceDetails?.pdfFile || "");
   const [showPdf, setShowPdf] = useState(false);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -25,6 +25,7 @@ const DocumentUpload = () => {
         setGlobalInvoiceDetails((prev) => ({
           ...prev,
           pdfFile: reader.result as string,
+          pdfFileName: file.name,
         }));
         localStorage.setItem("pdfFile", reader.result as string);
         setPdfUrl(reader.result as string);
@@ -49,12 +50,12 @@ const DocumentUpload = () => {
       ${isDragActive ? "bg-primary/10" : "bg-white hover:bg-gray-100"}`}
       >
         <input {...getInputProps()} />
-        {uploadedFile ? (
+        {pdfUrl ? (
           <div
             className="text-center !space-y-2 !py-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-sm text-gray-600">{uploadedFile.name}</p>
+            <p className="text-sm text-gray-600">{globalInvoiceDetails?.pdfFileName}</p>
             <Button variant="outlined" onClick={() => setShowPdf(true)}>
               View PDF
             </Button>

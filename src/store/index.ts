@@ -4,6 +4,7 @@ import { atomWithStorage } from "jotai/utils";
 export interface InvoiceDetailsAtom {
   id: string;
   pdfFile: string;
+  pdfFileName: string;
   vendor: string;
   invoiceDetails: {
     poNumber: string;
@@ -26,6 +27,7 @@ export interface InvoiceDetailsAtom {
 export const invoiceDetailsInitialState = {
   id: "",
   pdfFile: "",
+  pdfFileName: "",
   vendor: "",
   invoiceDetails: {
     poNumber: "",
